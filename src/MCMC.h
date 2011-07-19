@@ -18,6 +18,21 @@
 
 /* *** don't forget tail-> head, so this function accepts tails first, not heads  */
 
+void MCMC_wrapper2 (int *dnumnets, int *dnedges,
+		   int *tails, int *heads,
+                   int *maxpossibleedges,
+                   int *dn, int *dflag, int *bipartite, 
+                   int *nterms, char **funnames,
+                   char **sonames, 
+                   char **MHproposaltype, char **MHproposalpackage,
+                   double *inputs, double *theta0, int *samplesize, 
+                   double *sample, int *burnin, int *interval,  
+                   int *newnetworktails, 
+                   int *newnetworkheads, 
+                   int *fVerbose, 
+                   int *attribs, int *maxout, int *maxin, int *minout,
+                   int *minin, int *condAllDegExact, int *attriblength, 
+                   int *maxedges);
 void MCMC_wrapper (int *dnumnets, int *dnedges,
 		   int *tails, int *heads,
                    int *maxpossibleedges,

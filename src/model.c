@@ -327,3 +327,22 @@ void ChangeStats(unsigned int ntoggles, Vertex *toggletail, Vertex *togglehead,
     dstats += (mtp++)->nstats;
   }
 }
+
+/*
+  MCMCChangeStats
+  A helper's helper function to compute change statistics.
+  The vector of changes is written to m->workspace.
+*/
+void ChangeStats2(unsigned int ntoggles, Vertex *toggletail, Vertex *togglehead,
+				 Network *nwp, Model *m){
+  ModelTerm *mtp = m->termarray;
+  double *dstats = m->workspace;
+  
+  for (unsigned int i=0; i < m->n_terms; i++){
+    /* Calculate change statistics */
+    mtp->dstats = dstats; /* Stuck the change statistic here.*/
+    (*(mtp->d_func))(ntoggles, toggletail, togglehead, 
+		   mtp, nwp);  /* Call d_??? function */
+    dstats += (mtp++)->nstats;
+  }
+}
