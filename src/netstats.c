@@ -113,7 +113,7 @@ Network *nwp, Model *m, double *stats){
   PutRNGstate();
 }
 
-void MCMC_wrapper3 (int *dnumnets, int *nedges,
+void changescore(int *dnumnets, int *nedges,
 		   int *tails, int *heads,
                    int *ntoggles,
 		   int *toggletails, int *toggleheads,
@@ -154,24 +154,23 @@ void MCMC_wrapper3 (int *dnumnets, int *nedges,
 
   hammingterm=ModelTermHamming (*funnames, *nterms);
 
-  int n_edges = 1;
-
   for (unsigned int termi=0; termi < m->n_terms; termi++)
     m->termarray[termi].dstats = m->workspace;
   
   /* Doing this one toggle at a time saves a lot of toggles... */
-  for(Edge e=0; e<n_edges; e++){
+  for(Edge e=0; e < *ntoggles; e++){
+
     ModelTerm *mtp = m->termarray;
     double *statspos=stats;
     
     for (unsigned int termi=0; termi < m->n_terms; termi++, mtp++){
-      (*(mtp->d_func))(1, tails+e, heads+e, 
+      (*(mtp->d_func))(1, toggletails+e, toggleheads+e, 
       mtp, nw);  /* Call d_??? function */
       for (unsigned int i=0; i < mtp->nstats; i++,statspos++)
         *statspos += mtp->dstats[i];
     }
+    ToggleEdge(toggletails[e],toggleheads[e],nw);
     
-    ToggleEdge(tails[e],heads[e],nw);
   }
 
 

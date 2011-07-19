@@ -41,17 +41,55 @@
 #
 #########################################################################################
 
-get.changescore <- function(Clist, MHproposal, eta0, MCMCparams, verbose=FALSE) {
+network.for.changescores <- function(object) {
+  nw <- ergm.getnetwork(object)
+  basis <- nw
+form <- ergm.update.formula(object, basis ~ .)
+m <- ergm.getmodel(form, basis, drop=FALSE)
+Clist <- ergm.Cprepare(basis, m)
+constraints <- ~.
+control <- control.ergm()
+MHproposal <- MHproposal(constraints,arguments=control$prop.args, nw=nw, model=m, weights=control$prop.weights, class="c")  
+theta0 <- rep(0,Clist$nstats)
+verbose <- TRUE
+eta0 <- ergm.eta(theta0, m$etamap)
+# Create vector of current statistics
+curstats<-summary(form)
+names(curstats) <- m$coef.names
+  # prepare MCMCparams object
+burnin <- 1
+interval <- 1
+nsim <- 10
+  MCMCparams <- list(samplesize=1,
+                     maxedges = 1+max(control$maxedges, Clist$nedges),
+                     burnin=burnin,
+                     interval=interval,
+                     parallel=control$parallel,
+                     packagenames=control$packagenames,
+                     Clist.miss=ergm.design(nw, m, verbose=verbose))
+MCMCparams$samplesize <- nsim
+  x <- list(nw=nw,m=m,Clist=Clist,MHproposal=MHproposal,MCMCparams=MCMCparams)
+  class(x) <- c("networkcs")
+  return(x)
+}
+
+get.changescore <- function(networkstream,toggle.edges,verbose=FALSE) {
+  Clist <- networkstream$Clist
+  MHproposal <- networkstream$MHproposal
+  MCMCparams <- networkstream$MCMCparams
   maxedges <- MCMCparams$maxedges
   nedges <- c(Clist$nedges,0,0)
   tails <- Clist$tails
   heads <- Clist$heads
+  toggletails <- toggle.edges[,2]
+  toggleheads <- toggle.edges[,1]
+  ntoggles <- nrow(toggle.edges)
+  stats <- rep(0,Clist$nterms)
   # *** don't forget, tails is now passed in before heads.
-  z <- .C("MCMC_wrapper3",
-  as.integer(length(nedges)), as.integer(nedges),
-  as.integer(tails), as.integer(heads),
-  as.integer(nedges),
-  as.integer(tails), as.integer(heads),
+  z <- .C("changescore",
+  as.integer(length(nedges)),
+          as.integer(nedges),as.integer(tails), as.integer(heads),
+          as.integer(ntoggles),as.integer(toggletails), as.integer(toggleheads),
   as.integer(Clist$maxpossibleedges), as.integer(Clist$n),
   as.integer(Clist$dir), as.integer(Clist$bipartite),
   as.integer(Clist$nterms),
@@ -59,7 +97,7 @@ get.changescore <- function(Clist, MHproposal, eta0, MCMCparams, verbose=FALSE) 
   as.character(Clist$snamestring),
   as.character(MHproposal$name), as.character(MHproposal$package),
   as.double(Clist$inputs),
-  stats = as.double(eta0),
+  stats = as.double(stats),
   as.integer(MCMCparams$samplesize),
   # The line below was changed as of version 2.2-3.  Now, the statsmatrix is 
   # initialized to zero instead of allowing the first row to be nonzero, then 
@@ -86,7 +124,6 @@ get.changescore <- function(Clist, MHproposal, eta0, MCMCparams, verbose=FALSE) 
   statsmatrix <- matrix(z$statsmatrix, nrow = MCMCparams$samplesize, byrow=TRUE)
   statsmatrix[is.na(statsmatrix)] <- 0
 
-  ## outta here:  Return list with "statsmatrix" and "newedgelist"
-  return(list(statsmatrix = statsmatrix, newedgelist = newedgelist))
+  return(z$stats)
 }
 
