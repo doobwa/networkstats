@@ -50,6 +50,8 @@ get.changescore <- function(Clist, MHproposal, eta0, MCMCparams, verbose=FALSE) 
   z <- .C("MCMC_wrapper3",
   as.integer(length(nedges)), as.integer(nedges),
   as.integer(tails), as.integer(heads),
+  as.integer(nedges),
+  as.integer(tails), as.integer(heads),
   as.integer(Clist$maxpossibleedges), as.integer(Clist$n),
   as.integer(Clist$dir), as.integer(Clist$bipartite),
   as.integer(Clist$nterms),

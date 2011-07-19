@@ -113,103 +113,10 @@ Network *nwp, Model *m, double *stats){
   PutRNGstate();
 }
 
-void changestat(int *dnumnets, int *nedges,
-		   int *tails, int *heads,
-                   int *maxpossibleedges,
-                   int *dn, int *dflag, int *bipartite, 
-                   int *nterms, char **funnames,
-                   char **sonames, 
-                   char **MHproposaltype, char **MHproposalpackage,
-                   double *inputs, double *stats, int *samplesize, 
-                   double *sample, int *burnin, int *interval,  
-                   int *newnetworktails, 
-                   int *newnetworkheads, 
-                   int *fVerbose, 
-                   int *attribs, int *maxout, int *maxin, int *minout,
-                   int *minin, int *condAllDegExact, int *attriblength, 
-                   int *maxedges){
-  int directed_flag, hammingterm;
-  Vertex n_nodes, nmax, bip, htail, hhead;
-  Edge n_networks, nddyads, kedge;
-  Network nw[3];
-  DegreeBound *bd;
-  Model *m;
-  ModelTerm *thisterm;
-  
-  n_nodes = (Vertex)*dn; /* coerce double *dn to type Vertex */
-  n_networks = (Edge)*dnumnets; /* coerce double *dnumnets to type Edge */
-  nmax = (Edge)*maxedges; /* coerce double *maxedges to type Edge */
-  bip = (Vertex)*bipartite; /* coerce double *bipartite to type Vertex */
-  
-  GetRNGstate();  /* R function enabling uniform RNG */
-  
-  directed_flag = *dflag;
-
-  m=ModelInitialize(*funnames, *sonames, inputs, *nterms);
-
-  /* Form the network */
-  nw[0]=NetworkInitialize(tails, heads, nedges[0], n_nodes, directed_flag, bip, 0);
-
-  hammingterm=ModelTermHamming (*funnames, *nterms);
-  /*  ChangeStats(ntoggles, Vertex *toggletail, Vertex *togglehead,
-      Network *nwp, Model *m){*/
-/* Modifies newnetworktails and newnetworkheads in place?  */
-  /* MCMCSample (*MHproposaltype, *MHproposalpackage, */
-  /*             theta0, sample, (long int)*samplesize, */
-  /*             (long int)*burnin, (long int)*interval, */
-  /*             hammingterm, */
-  /*             (int)*fVerbose, nw, m, bd);   */
-  newnetworktails[1] = 5;
-
-  Vertex a = 1;
-  Vertex b = 2;
-  Vertex *toggletail = &a;
-  Vertex *togglehead = &b;
-  int ntoggles = 1;
-  ModelTerm *mtp = m->termarray;
-
-  /* double *dstats = m->workspace; */
-  /* for (unsigned int i=0; i < m->n_terms; i++){ */
-  /*    mtp->dstats = dstats; */
-  /*    (*(mtp->d_func))(ntoggles, toggletail, togglehead, mtp, nw); */
-  /*    dstats += (mtp++)->nstats; */
-  /* } */
-
-  /* dstats[1]=(double)5.0; */
-  /* sample[1]=(double)5.0; */
-  /* sample[2] = *mtp->dstats; */
-
-  /* for (unsigned int termi=0; termi < m->n_terms; termi++) */
-  /*   m->termarray[termi].dstats = m->workspace; */
-  
-  /* /\* Doing this one toggle at a time saves a lot of toggles... *\/ */
-  /* int n_edges=5; */
-  /* for(Edge e=0; e<n_edges; e++){ */
-  /*   ToggleEdge(tails[e],heads[e],nw); */
-  /*   ModelTerm *mtp = m->termarray; */
-  /*   double *statspos=stats; */
-    
-  /*   for (unsigned int termi=0; termi < m->n_terms; termi++, mtp++){ */
-  /*      if(!mtp->s_func){ */
-  /*       (*(mtp->d_func))(1, tails+e, heads+e, mtp, nw);  /\* Call d_??? function *\/ */
-  /*       for (unsigned int i=0; i < mtp->nstats; i++,statspos++) */
-  /*         *statspos += mtp->dstats[i]; */
-  /*     }else statspos += mtp->nstats; */
-  /*   } */
-    
-  /* } */
-
-  /*  SummStats(nedges, tails, heads, nw, m,stats);*/
-
-  /* ChangeStats(ntoggles,a,b,nw[0],m); /\*modifies model m in place*\/ */
-  /* newnetworktails[0]=newnetworkheads[0]=EdgeTree2EdgeList(newnetworktails+1,newnetworkheads+1,nw,nmax-1); */
-  ModelDestroy(m);
-  NetworkDestroy(nw);
-  PutRNGstate();  
-}
-
 void MCMC_wrapper3 (int *dnumnets, int *nedges,
 		   int *tails, int *heads,
+                   int *ntoggles,
+		   int *toggletails, int *toggleheads,
                    int *maxpossibleedges,
                    int *dn, int *dflag, int *bipartite, 
                    int *nterms, char **funnames,
@@ -247,8 +154,7 @@ void MCMC_wrapper3 (int *dnumnets, int *nedges,
 
   hammingterm=ModelTermHamming (*funnames, *nterms);
 
-  int n_edges = 5;
-  /*  SummStats(5, tails, heads, nw, m,stats);*/
+  int n_edges = 1;
 
   for (unsigned int termi=0; termi < m->n_terms; termi++)
     m->termarray[termi].dstats = m->workspace;
@@ -259,27 +165,15 @@ void MCMC_wrapper3 (int *dnumnets, int *nedges,
     double *statspos=stats;
     
     for (unsigned int termi=0; termi < m->n_terms; termi++, mtp++){
-      if(!mtp->s_func){
-        (*(mtp->d_func))(1, tails+e, heads+e, 
-        mtp, nw);  /* Call d_??? function */
-        for (unsigned int i=0; i < mtp->nstats; i++,statspos++)
-          *statspos += mtp->dstats[i];
-      }else statspos += mtp->nstats;
+      (*(mtp->d_func))(1, tails+e, heads+e, 
+      mtp, nw);  /* Call d_??? function */
+      for (unsigned int i=0; i < mtp->nstats; i++,statspos++)
+        *statspos += mtp->dstats[i];
     }
     
     ToggleEdge(tails[e],heads[e],nw);
   }
-  
-  ModelTerm *mtp = m->termarray;
-  double *dstats = m->workspace;
-  double *statspos=stats;
-  for (unsigned int termi=0; termi < m->n_terms; termi++, dstats+=mtp->nstats, mtp++ ){
-    if(mtp->s_func){
-      (*(mtp->s_func))(mtp, nw);  /* Call s_??? function */
-      for (unsigned int i=0; i < mtp->nstats; i++,statspos++)
-        *statspos += mtp->dstats[i];
-    }else statspos += mtp->nstats;
-  }
+
 
   ModelDestroy(m);
   NetworkDestroy(nw);
