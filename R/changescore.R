@@ -68,7 +68,6 @@ get.changescore <- function(ncs,toggle.edges) {
   as.integer(Clist$nterms),
   as.character(Clist$fnamestring),
   as.character(Clist$snamestring),
-  as.character(MHproposal$name), as.character(MHproposal$package),
   as.double(Clist$inputs),
   stats = as.double(stats),
   as.integer(MCMCparams$samplesize),
@@ -83,10 +82,7 @@ get.changescore <- function(ncs,toggle.edges) {
   as.integer(MCMCparams$interval),
   newnwtails = integer(MCMCparams$maxedges),
   newnwheads = integer(MCMCparams$maxedges),
-  as.integer(verbose), as.integer(MHproposal$bd$attribs),
-  as.integer(MHproposal$bd$maxout), as.integer(MHproposal$bd$maxin),
-  as.integer(MHproposal$bd$minout), as.integer(MHproposal$bd$minin),
-  as.integer(MHproposal$bd$condAllDegExact), as.integer(length(MHproposal$bd$attribs)),
+  as.integer(verbose),
   as.integer(maxedges),
   PACKAGE="ergm")
 
