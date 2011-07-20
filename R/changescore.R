@@ -78,10 +78,10 @@ get.changescore <- function(networkstream,toggle.edges,verbose=FALSE) {
   MHproposal <- networkstream$MHproposal
   MCMCparams <- networkstream$MCMCparams
   maxedges <- MCMCparams$maxedges
-  nedges <- c(Clist$nedges,0,0)
   edgelist <- as.edgelist(networkstream$nw)
   tails <- edgelist[,2]
   heads <- edgelist[,1]
+  nedges <- nrow(edgelist)
   toggletails <- toggle.edges[,2]
   toggleheads <- toggle.edges[,1]
   ntoggles <- nrow(toggle.edges)

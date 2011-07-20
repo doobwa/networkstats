@@ -24,7 +24,8 @@ test_that("change score method still correct when adding, then subtracting", {
 })
 
 test_that("change score works with an initial network",{
-  nw <- as.network(cbind(c(1,2,3),c(2,3,1)))
+  edges <- cbind(c(1,2,3),c(2,3,1))
+  nw <- as.network(edges)
   ns <- network.for.changescores(nw ~ edges + triangles)
   oldstat <- ergm.getglobalstats(ns$nw,ns$m)
   edges <- cbind(2,1)
@@ -56,6 +57,7 @@ test_that("edge and tri change scores match ERGM's globalstats for a quick examp
     ns$nw[e[1],e[2]] <- 1
     newstat <- ergm.getglobalstats(ns$nw,ns$m)
     expect_that(newstat-oldstat, is_equivalent_to(z))
+    oldstat <- newstat
   }
 })
 
