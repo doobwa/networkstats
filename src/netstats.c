@@ -150,7 +150,11 @@ void changescore(int *dnumnets, int *nedges,
   m=ModelInitialize(*funnames, *sonames, inputs, *nterms);
 
   /* Form the network */
-  nw[0]=NetworkInitialize(tails, heads, nedges[0], n_nodes, directed_flag, bip, 0);
+  /*  nw[0]=NetworkInitialize(tails, heads, nedges[0], n_nodes, directed_flag, bip, 0);*/
+  nw[0]=NetworkInitialize(NULL, NULL, nedges[0], n_nodes, directed_flag, bip, 0);
+  for(Edge e=0; e < *nedges; e++){
+    ToggleEdge(tails[e],heads[e],nw);
+  }
 
   hammingterm=ModelTermHamming (*funnames, *nterms);
 
