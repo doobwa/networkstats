@@ -113,8 +113,31 @@ Network *nwp, Model *m, double *stats){
   PutRNGstate();
 }
 
-void changescore(
-                 int *dnumnets, int *nedges,
+
+/*   int directed_flag, hammingterm; */
+/*   Vertex n_nodes, nmax, bip, htail, hhead; */
+/*   Edge n_networks, nddyads, kedge; */
+/*   Network nw[3]; */
+/*   Model *m; */
+  
+/*   n_nodes = (Vertex)*dn; /\* coerce double *dn to type Vertex *\/ */
+/*   /\*  n_networks = (Edge)*dnumnets; /\* coerce double *dnumnets to type Edge *\/ */
+/*   bip = (Vertex)*bipartite; /\* coerce double *bipartite to type Vertex *\/ */
+  
+/*   GetRNGstate();  /\* R function enabling uniform RNG *\/ */
+/*   directed_flag = *dflag; */
+/*   nw[0]=NetworkInitialize(tails, heads, *nedges, n_nodes, directed_flag, bip, 0); */
+/*   for(Edge e=0; e < 3; e++){ */
+/*     ToggleEdge(toggletails[e],toggleheads[e],nw); */
+/*   } */
+/*   newnetworktails[0]=newnetworkheads[0]=EdgeTree2EdgeList(newnetworktails+1,newnetworkheads+1,nw,nmax); */
+/*   NetworkDestroy(nw); */
+/*   PutRNGstate();  /\* Disable RNG before returning *\/ */
+
+/* } */
+
+
+void changescore(int *dnumnets, int *nedges,
 		   int *tails, int *heads,
                    int *ntoggles,
 		   int *toggletails, int *toggleheads,
@@ -147,9 +170,6 @@ void changescore(
   m=ModelInitialize(*funnames, *sonames, inputs, *nterms);
 
   nw[0]=NetworkInitialize(tails, heads, *nedges, n_nodes, directed_flag, bip, 0);
-  for(Edge e=0; e < 3; e++){
-    /*ToggleEdge(tails[e],heads[e],nw);*/
-  }
 
   hammingterm=ModelTermHamming (*funnames, *nterms);
 
@@ -172,12 +192,36 @@ void changescore(
     
   }
 
-
   ModelDestroy(m);
   NetworkDestroy(nw);
   PutRNGstate();  /* Disable RNG before returning */
-  /*
-void ChangeStats(unsigned int ntoggles, Vertex *toggletail, Vertex *togglehead,
-				 Network *nwp, Model *m)
-  */
+}
+
+void dotoggles(
+                 int *dnumnets, int *nedges,
+		   int *tails, int *heads,
+                   int *ntoggles,
+		   int *toggletails, int *toggleheads,
+                   int *maxpossibleedges,
+                   int *newnetworktails, 
+                   int *newnetworkheads, 
+                 int *dn, int *dflag, int *bipartite) {
+  int directed_flag, hammingterm;
+  Vertex n_nodes, nmax, bip, htail, hhead;
+  Edge n_networks, nddyads, kedge;
+  Network nw[3];
+  
+  n_nodes = (Vertex)*dn; /* coerce double *dn to type Vertex */
+  bip = (Vertex)*bipartite; /* coerce double *bipartite to type Vertex */
+  
+  GetRNGstate();  /* R function enabling uniform RNG */
+  directed_flag = *dflag;
+
+  nw[0]=NetworkInitialize(tails, heads, *nedges, n_nodes, directed_flag, bip, 0);
+  for(Edge e=0; e < *ntoggles; e++){
+    ToggleEdge(toggletails[e],toggleheads[e],nw);
+  }
+  newnetworktails[0]=newnetworkheads[0]=EdgeTree2EdgeList(newnetworktails+1,newnetworkheads+1,nw,nmax); 
+  NetworkDestroy(nw);
+  PutRNGstate();  /* Disable RNG before returning */
 }

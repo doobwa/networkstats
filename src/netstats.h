@@ -22,6 +22,15 @@ void network_stats_wrapper(int *tails, int *heads, int *dnedges,
 			   char **sonames, double *inputs,  double *stats);
 void SummStats(Edge n_edges, Vertex *tails, Vertex *heads,
 	       Network *nwp, Model *m, double *stats);
+
+/* void do_toggles(int *nedges, */
+/*                int *tails, int *heads, */
+/*                int *ntoggles, */
+/*                int *toggletails, int *toggleheads, */
+/*                int *dn, int *dflag, int *bipartite, */
+/*                int *newnetworktails, */
+/*                int *newnetworkheads); */
+
 void changescore(int *dnumnets, int *nedges,
 		   int *tails, int *heads,
                    int *ntoggles,
@@ -39,4 +48,14 @@ void changescore(int *dnumnets, int *nedges,
                    int *attribs, int *maxout, int *maxin, int *minout,
                    int *minin, int *condAllDegExact, int *attriblength, 
                    int *maxedges);
+
+void dotoggles(    int *dnumnets, int *nedges,
+		   int *tails, int *heads,
+                   int *ntoggles,
+		   int *toggletails, int *toggleheads,
+                   int *maxpossibleedges,
+                   int *newnetworktails, 
+                   int *newnetworkheads, 
+                   int *dn, int *dflag, int *bipartite);
+
 #endif

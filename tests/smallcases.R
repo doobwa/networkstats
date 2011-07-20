@@ -2,7 +2,25 @@ require(devtools)
 require(testthat)
 require(network)
 require(sna)
+require(ergm)
 require(networkstats)
+
+test_that("we can perform toggles", {
+  nw <- network.initialize(3)
+  edges <- cbind(c(1,2,3),c(2,3,1))
+  ns <- network.for.changescores(nw ~ edges)
+  ns <- do.toggles(ns,edges)
+  expect_that(network.edgecount(ns$nw),is_equivalent_to(3))
+  ns <- do.toggles(ns,edges)  
+  expect_that(network.edgecount(ns$nw),is_equivalent_to(0))
+  edges <- cbind(2,1)  # try just single edges
+  ns <- do.toggles(ns,edges)
+  expect_that(network.edgecount(ns$nw),is_equivalent_to(1))  
+  edges <- cbind(2,3)  # try just single edges
+  ns <- do.toggles(ns,edges)
+  expect_that(network.edgecount(ns$nw),is_equivalent_to(2))  
+  expect_that(1,is_equivalent_to(ns$nw[2,3]))
+})
 
 test_that("change score method works on a simple triangle example", {
   nw <- network.initialize(3)
