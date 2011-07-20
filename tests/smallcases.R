@@ -18,7 +18,7 @@ test_that("change score method still correct when adding, then subtracting", {
   edges <- cbind(c(1,2,3),c(2,3,1))
   edges <- rbind(edges,edges)
   z <- get.changescore(ns,edges)
-  expect_that(c(0,0), is_equivalent_to(z))
+  expect_that(c(0,0), is_equivalent_to(z)) 
 })
 
 test_that("change score works with an initial network",{

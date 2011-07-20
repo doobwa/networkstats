@@ -113,16 +113,24 @@ Network *nwp, Model *m, double *stats){
   PutRNGstate();
 }
 
-void changescore(int *dnumnets, 
-                 int *nedges, int *tails, int *heads,
-                 int *ntoggles, int *toggletails, int *toggleheads,
+void changescore(
+int *dnumnets, int *nedges,
+		   int *tails, int *heads,
+                   int *ntoggles,
+		   int *toggletails, int *toggleheads,
+                   int *maxpossibleedges,
                    int *dn, int *dflag, int *bipartite, 
-                   int *nterms, 
-                   char **funnames,
+                   int *nterms, char **funnames,
                    char **sonames, 
-                   double *inputs, double *stats, 
+                   char **MHproposaltype, char **MHproposalpackage,
+                   double *inputs, double *stats, int *samplesize, 
+                   double *sample, int *burnin, int *interval,  
                    int *newnetworktails, 
-                   int *newnetworkheads) {
+                   int *newnetworkheads, 
+                   int *fVerbose, 
+                   int *attribs, int *maxout, int *maxin, int *minout,
+                   int *minin, int *condAllDegExact, int *attriblength, 
+                   int *maxedges) {
   int directed_flag, hammingterm;
   Vertex n_nodes, nmax, bip, htail, hhead;
   Edge n_networks, nddyads, kedge;

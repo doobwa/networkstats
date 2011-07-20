@@ -22,15 +22,21 @@ void network_stats_wrapper(int *tails, int *heads, int *dnedges,
 			   char **sonames, double *inputs,  double *stats);
 void SummStats(Edge n_edges, Vertex *tails, Vertex *heads,
 	       Network *nwp, Model *m, double *stats);
-void changescore(int *dnumnets, 
-                 int *dnedges,  int *tails, int *heads,
+void changescore(int *dnumnets, int *dnedges,
                    int *ntoggles,
 		   int *toggletails, int *toggleheads,
+		   int *tails, int *heads,
+                   int *maxpossibleedges,
                    int *dn, int *dflag, int *bipartite, 
                    int *nterms, char **funnames,
                    char **sonames, 
-                   double *inputs, 
-                 double *theta0,
+                   char **MHproposaltype, char **MHproposalpackage,
+                   double *inputs, double *theta0, int *samplesize, 
+                   double *sample, int *burnin, int *interval,  
                    int *newnetworktails, 
-                   int *newnetworkheads);
+                   int *newnetworkheads, 
+                   int *fVerbose, 
+                   int *attribs, int *maxout, int *maxin, int *minout,
+                   int *minin, int *condAllDegExact, int *attriblength, 
+                   int *maxedges);
 #endif

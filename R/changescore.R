@@ -60,22 +60,34 @@ get.changescore <- function(ncs,toggle.edges) {
   stats <- rep(0,Clist$nterms)
   # *** don't forget, tails is now passed in before heads.
   z <- .C("changescore",
-  as.integer(length(nedges)),
-          as.integer(nedges),
-          as.integer(tails),
-          as.integer(heads),
-          as.integer(ntoggles),
-          as.integer(toggletails),
-          as.integer(toggleheads),
-          as.integer(Clist$n),
+            as.integer(length(nedges)),
+          as.integer(nedges),as.integer(tails), as.integer(heads),
+          as.integer(ntoggles),as.integer(toggletails), as.integer(toggleheads),
+  as.integer(Clist$maxpossibleedges), as.integer(Clist$n),
   as.integer(Clist$dir), as.integer(Clist$bipartite),
   as.integer(Clist$nterms),
   as.character(Clist$fnamestring),
   as.character(Clist$snamestring),
+  as.character(MHproposal$name), as.character(MHproposal$package),
   as.double(Clist$inputs),
   stats = as.double(stats),
+  as.integer(MCMCparams$samplesize),
+  # The line below was changed as of version 2.2-3.  Now, the statsmatrix is 
+  # initialized to zero instead of allowing the first row to be nonzero, then 
+  # adding this first row to each row within MCMC_wrapper.
+  # This is worth it:  There is no reason
+  # that MCMCparams should include a huge matrix.
+  statsmatrix = double(MCMCparams$samplesize * Clist$nstats),  # sample
+  #  statsmatrix = as.double(t(MCMCparams$stats)), # By default, as.double goes bycol, not byrow; thus, we use the transpose here.
+  as.integer(MCMCparams$burnin),
+  as.integer(MCMCparams$interval),
   newnwtails = integer(MCMCparams$maxedges),
   newnwheads = integer(MCMCparams$maxedges),
+  as.integer(verbose), as.integer(MHproposal$bd$attribs),
+  as.integer(MHproposal$bd$maxout), as.integer(MHproposal$bd$maxin),
+  as.integer(MHproposal$bd$minout), as.integer(MHproposal$bd$minin),
+  as.integer(MHproposal$bd$condAllDegExact), as.integer(length(MHproposal$bd$attribs)),
+  as.integer(maxedges),
   PACKAGE="ergm")
 
   nedges <- z$newnwtails[1]  # This tells how many new edges there are
