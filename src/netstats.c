@@ -113,40 +113,29 @@ Network *nwp, Model *m, double *stats){
   PutRNGstate();
 }
 
-void changescore(int *dnumnets, int *nedges,
-		   int *tails, int *heads,
-                   int *ntoggles,
-		   int *toggletails, int *toggleheads,
-                   int *maxpossibleedges,
+void changescore(int *dnumnets, 
+                 int *nedges, int *tails, int *heads,
+                 int *ntoggles, int *toggletails, int *toggleheads,
                    int *dn, int *dflag, int *bipartite, 
-                   int *nterms, char **funnames,
+                   int *nterms, 
+                   char **funnames,
                    char **sonames, 
-                   char **MHproposaltype, char **MHproposalpackage,
-                   double *inputs, double *stats, int *samplesize, 
-                   double *sample, int *burnin, int *interval,  
+                   double *inputs, double *stats, 
                    int *newnetworktails, 
-                   int *newnetworkheads, 
-                   int *fVerbose, 
-                   int *attribs, int *maxout, int *maxin, int *minout,
-                   int *minin, int *condAllDegExact, int *attriblength, 
-                   int *maxedges){
+                   int *newnetworkheads) {
   int directed_flag, hammingterm;
   Vertex n_nodes, nmax, bip, htail, hhead;
   Edge n_networks, nddyads, kedge;
   Network nw[3];
-  DegreeBound *bd;
   Model *m;
   ModelTerm *thisterm;
   
   n_nodes = (Vertex)*dn; /* coerce double *dn to type Vertex */
   n_networks = (Edge)*dnumnets; /* coerce double *dnumnets to type Edge */
-  nmax = (Edge)*maxedges; /* coerce double *maxedges to type Edge */
   bip = (Vertex)*bipartite; /* coerce double *bipartite to type Vertex */
   
   GetRNGstate();  /* R function enabling uniform RNG */
-  
   directed_flag = *dflag;
-
   m=ModelInitialize(*funnames, *sonames, inputs, *nterms);
 
   nw[0]=NetworkInitialize(tails, heads, *nedges, n_nodes, directed_flag, bip, 0);

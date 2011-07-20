@@ -2,10 +2,8 @@ require(devtools)
 require(testthat)
 require(network)
 require(sna)
-require(ergm)
-load_all("~/Downloads/ergm")
+require(networkstats)
 
-# Testing
 test_that("change score method works on a simple triangle example", {
   nw <- network.initialize(3)
   ns <- network.for.changescores(nw ~ edges + triangles)
@@ -61,11 +59,3 @@ test_that("edge and tri change scores match ERGM's globalstats for a quick examp
   }
 })
 
-## # Timing experiments
-## toggle.edges <- cbind(sample(1:1000),sample(1:1000))
-## nw <- as.network(toggle.edges)
-## ns <- network.for.changescores(nw ~ edges + triangles)
-## for (i in 1:1000) {
-##   ergm.getglobalstats(ns$nw,ns$m)
-## }
-## z <- get.changescore(ns,toggle.edges)
