@@ -176,7 +176,6 @@ void changescore(int *dnumnets, int *nedges,
   for (unsigned int termi=0; termi < m->n_terms; termi++)
     m->termarray[termi].dstats = m->workspace;
   
-  /* Doing this one toggle at a time saves a lot of toggles... */
   for(Edge e=0; e < *ntoggles; e++){
 
     ModelTerm *mtp = m->termarray;

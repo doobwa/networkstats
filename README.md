@@ -12,3 +12,4 @@ applications, 2) more easily extensible to new statistics, 3) possibly
 make ergm cleaner and easier for a wider community to understand and
 maintain.
 
+NOTE: Update code only working for directed networks.
