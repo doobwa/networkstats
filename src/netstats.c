@@ -224,3 +224,67 @@ void dotoggles(
   NetworkDestroy(nw);
   PutRNGstate();  /* Disable RNG before returning */
 }
+
+int ExampleReturnPointer(int *b) {
+  return(b);
+}
+
+
+void changescorenetwork(int *dnumnets, int *nedges,
+		   int *tails, int *heads,
+                   int *ntoggles,
+		   int *toggletails, int *toggleheads,
+                   int *maxpossibleedges,
+                   int *dn, int *dflag, int *bipartite, 
+                   int *nterms, char **funnames,
+                   char **sonames, 
+                   char **MHproposaltype, char **MHproposalpackage,
+                   double *inputs, double *stats, int *samplesize, 
+                   double *sample, int *burnin, int *interval,  
+                   int *newnetworktails, 
+                   int *newnetworkheads, 
+                   int *fVerbose, 
+                   int *attribs, int *maxout, int *maxin, int *minout,
+                   int *minin, int *condAllDegExact, int *attriblength, 
+                   int *maxedges) {
+  int directed_flag, hammingterm;
+  Vertex n_nodes, nmax, bip, htail, hhead;
+  Edge n_networks, nddyads, kedge;
+  Network nw[3];
+  Model *m;
+  ModelTerm *thisterm;
+  
+  n_nodes = (Vertex)*dn; /* coerce double *dn to type Vertex */
+  n_networks = (Edge)*dnumnets; /* coerce double *dnumnets to type Edge */
+  bip = (Vertex)*bipartite; /* coerce double *bipartite to type Vertex */
+  
+  GetRNGstate();  /* R function enabling uniform RNG */
+  directed_flag = *dflag;
+  m=ModelInitialize(*funnames, *sonames, inputs, *nterms);
+
+  nw[0]=NetworkInitialize(tails, heads, *nedges, n_nodes, directed_flag, bip, 0);
+
+  hammingterm=ModelTermHamming (*funnames, *nterms);
+
+  for (unsigned int termi=0; termi < m->n_terms; termi++)
+    m->termarray[termi].dstats = m->workspace;
+  
+  for(Edge e=0; e < *ntoggles; e++){
+
+    ModelTerm *mtp = m->termarray;
+    double *statspos=stats;
+    
+    for (unsigned int termi=0; termi < m->n_terms; termi++, mtp++){
+      (*(mtp->d_func))(1, toggletails+e, toggleheads+e, 
+      mtp, nw);  /* Call d_??? function */
+      for (unsigned int i=0; i < mtp->nstats; i++,statspos++)
+        *statspos += mtp->dstats[i];
+    }
+    ToggleEdge(toggletails[e],toggleheads[e],nw);
+    
+  }
+
+  ModelDestroy(m);
+  NetworkDestroy(nw);
+  PutRNGstate();  /* Disable RNG before returning */
+}

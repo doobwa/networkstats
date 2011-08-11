@@ -17,3 +17,4 @@ License: GPL-3 + file LICENSE
 Date/Publication: 2011-07-19 4:01:46
 Collate:
     'changescore.R'
+    'loglik.est.iffy.R'

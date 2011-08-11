@@ -173,3 +173,58 @@ do.toggles <- function(ncs,edges) {
 ##   return(invisible(NULL))
 ## }
 
+get.changescore.network <- function(ncs,toggle.edges) {
+  tmp <- 10
+  Clist <- ncs$Clist
+  MHproposal <- ncs$MHproposal
+  MCMCparams <- ncs$MCMCparams
+  maxedges <- MCMCparams$maxedges
+  verbose <- FALSE
+  edgelist <- as.edgelist(ncs$nw)
+  tails <- edgelist[,2]
+  heads <- edgelist[,1]
+  nedges <- nrow(edgelist)
+  toggletails <- toggle.edges[,2]
+  toggleheads <- toggle.edges[,1]
+  ntoggles <- nrow(toggle.edges)
+  stats <- rep(0,Clist$nterms)
+  # *** don't forget, tails is now passed in before heads.
+  z <- .C("changescorenetwork",
+          as.integer(length(nedges)),
+          as.integer(nedges),as.integer(tails), as.integer(heads),
+          as.integer(ntoggles),as.integer(toggletails), as.integer(toggleheads),
+          as.integer(Clist$maxpossibleedges), as.integer(Clist$n),
+          as.integer(Clist$dir), as.integer(Clist$bipartite),
+          as.integer(Clist$nterms),
+          as.character(Clist$fnamestring),
+          as.character(Clist$snamestring),
+          as.character(MHproposal$name), as.character(MHproposal$package),
+          as.double(Clist$inputs),
+          stats = as.double(stats),
+          as.integer(MCMCparams$samplesize),
+          statsmatrix = double(MCMCparams$samplesize * Clist$nstats),  # sample
+          as.integer(MCMCparams$burnin),
+          as.integer(MCMCparams$interval),
+          newnwtails = integer(MCMCparams$maxedges),
+          newnwheads = integer(MCMCparams$maxedges),
+          as.integer(verbose),
+          as.integer(MHproposal$bd$attribs),
+          as.integer(MHproposal$bd$maxout),
+          as.integer(MHproposal$bd$maxin),
+          as.integer(MHproposal$bd$minout),
+          as.integer(MHproposal$bd$minin),
+          as.integer(MHproposal$bd$condAllDegExact),
+          as.integer(length(MHproposal$bd$attribs)),
+          as.integer(maxedges),
+          PACKAGE="networkstats")
+
+  nedges <- z$newnwtails[1]  # This tells how many new edges there are
+  newedgelist <- cbind(z$newnwtails[2:(nedges+1)], z$newnwheads[2:(nedges+1)])
+
+  return(z)
+}
+
+example.return.pointer <- function(b) {
+    z <- .C("ExampleReturnPointer",as.integer(b), PACKAGE="networkstats")
+    return(z)
+}

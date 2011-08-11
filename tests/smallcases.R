@@ -121,3 +121,25 @@ test_that("edge and tri change scores match ERGM's globalstats for an undirected
   }
 })
 
+test_that("in place network structure", {
+  # Idea: Function for creating network, model data structures in C,
+  # which passes back the pointers to these structures.  (Another
+  # function exists for tearing down these structures.)  To update we
+  # pass a C function the pointers to these structures as well as
+  # other arguments for getting changescores.  We'll need getter
+  # methods to grab the data.
+  nw <- network.initialize(5,directed=FALSE)
+  edges <- cbind(c(1,2,3,4,2),c(1,1,1,1,3))
+  ns <- network.for.changescores(nw ~ edges + triangles)
+  ns <- do.toggles(ns,edges)
+  tmp <- get.changescore.network(ns,edges)
+  ergm.getglobalstats(ns$nw,ns$m)
+
+
+})
+
+library(networkstats)
+dyn.load("~/Documents/networkstats/src/networkstats.so")
+
+example.return.pointer(5)
+
