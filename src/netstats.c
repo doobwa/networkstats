@@ -225,10 +225,6 @@ void dotoggles(
   PutRNGstate();  /* Disable RNG before returning */
 }
 
-int ExampleReturnPointer(int *b) {
-  return(b);
-}
-
 
 void changescorenetwork(int *dnumnets, int *nedges,
 		   int *tails, int *heads,
@@ -288,3 +284,8 @@ void changescorenetwork(int *dnumnets, int *nedges,
   NetworkDestroy(nw);
   PutRNGstate();  /* Disable RNG before returning */
 }
+
+int ExampleReturnPointer(int *b) {
+  return(&b);
+}
+

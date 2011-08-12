@@ -143,3 +143,46 @@ dyn.load("~/Documents/networkstats/src/networkstats.so")
 
 example.return.pointer(5)
 
+body <- paste(readLines("src/example.cpp"),collapse="\n")
+
+body <- '
+NumericVector xx(x);
+int ii = as<int>(i);
+xx = xx * ii;
+return( xx );
+'
+
+body <- '
+using namespace Rcpp;
+double norm( double x, double y ) {
+  return sqrt( x*x + y*y );
+}
+RCPP_MODULE(mod) {
+  function( "norm", &norm );
+}
+'
+
+body <- '
+const char* hello( std::string who ){
+  std::string result( "hello " ) ;
+  result += who ;
+  return result.c_str() ;
+}
+double norm( double x, double y ) {
+  return sqrt( x*x + y*y );
+}
+RCPP_MODULE(yada){
+  using namespace Rcpp ;
+  function( "hello", &hello ) ;
+  function("norm",&norm);
+}
+'
+
+require(inline)
+require(Rcpp)
+testfun = cxxfunction(signature(x="numeric"), body = body, plugin="Rcpp")
+testfun(1:5, 3)
+
+dd3 = modfunction('yada', 'src/example.cpp', plugin='Rcpp', verbose=F)
+dd3$norm(5,10)
+
