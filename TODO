@@ -1,0 +1,2 @@
+- Need to remove dyn.load in changescore.c.  Shouldn't have to do
+   this!  Maybe due to something changing in R 2.13.

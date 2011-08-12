@@ -1,5 +1,5 @@
-#ifndef _mypackage_RCPP_HELLO_WORLD_H
-#define _mypackage_RCPP_HELLO_WORLD_H
+#ifndef _pkg_RCPP_HELLO_WORLD_H
+#define _pkg_RCPP_HELLO_WORLD_H
 
 #include <Rcpp.h>
 

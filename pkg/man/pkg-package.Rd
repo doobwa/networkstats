@@ -1,6 +1,6 @@
-\name{mypackage-package}
-\alias{mypackage-package}
-\alias{mypackage}
+\name{pkg-package}
+\alias{pkg-package}
+\alias{pkg}
 \docType{package}
 \title{
 What the package does (short line)
@@ -11,7 +11,7 @@ More about what it does (maybe more than one line)
 }
 \details{
 \tabular{ll}{
-Package: \tab mypackage\cr
+Package: \tab pkg\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2011-08-11\cr
