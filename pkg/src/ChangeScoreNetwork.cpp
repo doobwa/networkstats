@@ -1,3 +1,5 @@
+// Need to adapt the inline code and save it here.  Remember to add the name of the module to DESCRIPTION file.
+
 #include <Rcpp.h>
 #include "edgetree.h"
 
