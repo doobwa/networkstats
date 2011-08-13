@@ -1,0 +1,6 @@
+library(inline)
+inc <- paste(readLines('tests/convertCharExample.txt.cpp'),collapse="\n")
+fx <- cxxfunction( signature(), "" , include = inc, plugin = "Rcpp" )
+a <- Module( "foo_mod", getDynLib(fx) )
+b <- new(a$Foo,1:5)
+b$convertExample()

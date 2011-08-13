@@ -4,18 +4,20 @@
 #include <algorithm>
 #include <iterator>
 #include <cstring>
+
+
+char *convert(const std::string & s)
+  {
+    char *pc = new char[s.size()+1];
+    std::strcpy(pc, s.c_str());
+    return pc; 
+  }
+
  
 class Foo {
 public:
   Foo(IntegerVector tail) {
     this->tail = tail;
-  }
-
-  char *convert(const std::string & s)
-  {
-    char *pc = new char[s.size()+1];
-    std::strcpy(pc, s.c_str());
-    return pc; 
   }
 
   int convertExample() {

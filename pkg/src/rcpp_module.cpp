@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-
+using namespace Rcpp;
 std::string hello() {
 	throw std::range_error( "boom" ) ;
 }
