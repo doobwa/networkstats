@@ -23,7 +23,9 @@ void bla1( int x){
 void bla2( int x, double y){
 	Rprintf( "hello (x = %d, y = %5.2f)\\n", x, y ) ;
 }
-
+int bla3(IntegerVector z) {
+  return sum(z);
+}
 class World {
 public:
     World() : msg("hello"){}

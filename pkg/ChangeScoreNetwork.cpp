@@ -15,7 +15,6 @@ class ChangeScoreNetwork {
 public:
 
   ChangeScoreNetwork(int tail) {
-    //    IntegerVector a;
     // this->hasNetwork = FALSE;
     // this->hasModel = FALSE;
     this->tail = tail;
