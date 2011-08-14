@@ -3,22 +3,6 @@ library(inline)
 library(network)
 require(sna)
 require(ergm)
-#source('R/utils.R')
-
-## r <- Module("yada")
-## r$bla()
-## s <- new(r)
-
-## inc <- paste(readLines('tests/convertCharExample.txt.cpp'),collapse="\n")
-## fx <- cxxfunction( signature(), "" , include = inc, plugin = "Rcpp" )
-## a <- Module( "foo_mod", getDynLib(fx) )
-## b <- new(a$Foo,1:5)
-## b$convertExample()
-
-## inc <- paste(readLines('tests/ChangeScoreNetwork.txt.cpp'),collapse="\n")
-## fx <- cxxfunction( signature(), "" , include = inc, plugin = "Rcpp" )
-## a <- Module( "change_score_network2", getDynLib(fx) )
-## csn <- new(a$ChangeScoreNetwork2,1)
 
 #dyn.load("src/pkg.so")
 show(ChangeScoreNetwork)
@@ -57,3 +41,18 @@ csn$initializeModel(as.character(funnames),as.character(sonames),
                     as.double(inputs),as.integer(nterms))
 csn$getNumTerms()
 csn$getStats()
+
+## r <- Module("yada")
+## r$bla()
+## s <- new(r)
+
+## inc <- paste(readLines('tests/convertCharExample.txt.cpp'),collapse="\n")
+## fx <- cxxfunction( signature(), "" , include = inc, plugin = "Rcpp" )
+## a <- Module( "foo_mod", getDynLib(fx) )
+## b <- new(a$Foo,1:5)
+## b$convertExample()
+
+## inc <- paste(readLines('tests/ChangeScoreNetwork.txt.cpp'),collapse="\n")
+## fx <- cxxfunction( signature(), "" , include = inc, plugin = "Rcpp" )
+## a <- Module( "change_score_network2", getDynLib(fx) )
+## csn <- new(a$ChangeScoreNetwork2,1)

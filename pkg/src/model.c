@@ -38,7 +38,11 @@ Model* ModelInitialize (char *fnames, char *sonames, double *inputs,
   ModelTerm *thisterm;
   char *fn,*sn;
   Model *m;
-  
+
+  printf("%s|\n",fnames);
+  printf("%s|\n",sonames);
+  printf("%d|\n",n_terms);
+
   m = (Model *) malloc(sizeof(Model));
   m->n_terms = n_terms;
   m->termarray = (ModelTerm *) malloc(sizeof(ModelTerm) * n_terms);

@@ -16,6 +16,12 @@
 #include "changestat.c"
 using namespace Rcpp;
 
+char *convert(const std::string & s) {
+ char *pc = new char[s.size()+1];
+ std::strcpy(pc, s.c_str());
+ return pc;
+}
+
 class ChangeScoreNetwork {
 public:
 
@@ -40,26 +46,21 @@ public:
   }
   void initializeModel(CharacterVector funnamesv, CharacterVector sonamesv, 
                        NumericVector inputsv, IntegerVector ntermsv) {
-    //    char* funnames = funnamesv.begin();//
-    //    char funnames[] = { 'H', 'e', 'l', 'l', 'o', '\0' }; 
     this->hasModel = TRUE;
+    // char* funnames = convert(funnamesv);
+    // char* sonames = convert(sonamesv);
     char funnames[]= "edges triangle";
-    char sonames[] = "pkg pkg";//"pkg pkg";
-    double inputs[] = {0,1,0,0,1,0};
-    int nterms = 10;
+    char sonames[] = "ergm ergm";//"pkg pkg";
     char *fnames = funnames;
     char *snames = sonames;
+    double inputs[] = {0,1,0,0,1,0};
+    int nterms = 2;
     double *inp = inputs;
+    double st[2] = {0,0};
+    this->stats = st;
     this->m = ModelInitialize(fnames, snames, inp, nterms);
-    //    double stats[nterms] = {0};
   }
-  void toggleEdge(int tail, int head) {
-    if (this->hasNetwork) {
-      ToggleEdge(tail,head,&this->nw);
-    }
-    // TODO: Update statistics
-  }
-  void toggleEdgelist(IntegerVector toggletails, IntegerVector toggleheads) {
+  void toggleEdgelist(IntegerVector tails, IntegerVector heads) {
     if (!this->hasNetwork) { 
       printf("Need to initialize network\n");
       return;
@@ -68,24 +69,27 @@ public:
       printf("Need to initialize model\n");
       return;
     }
+    int *toggletails = tails.begin();
+    int *toggleheads = heads.begin();
     Model *m = this->m;
-    Network nw = this->nw;
-    int ntoggles = toggletails.size();
-    
+    Network nw[3];
+    nw[0] = this->nw;
+    int ntoggles = tails.size();
+    //    int nterms = m->n_terms;
     for (unsigned int termi=0; termi < m->n_terms; termi++)
       m->termarray[termi].dstats = m->workspace;
   
     for(Edge e=0; e < ntoggles; e++){
-      // ModelTerm *mtp = m->termarray;
-      // double *statspos=stats;
+      ModelTerm *mtp = m->termarray;
+      double *statspos = this->stats;
     
-      // for (unsigned int termi=0; termi < m->n_terms; termi++, mtp++){
-      //   (*(mtp->d_func))(1, toggletails+e, toggleheads+e, 
-      //                    mtp, nw);  /* Call d_??? function */
-      //   for (unsigned int i=0; i < mtp->nstats; i++,statspos++)
-      //     *statspos += mtp->dstats[i];
-      // }
-    //      ToggleEdge(toggletails[e],toggleheads[e],&this->nw);
+      for (unsigned int termi=0; termi < m->n_terms; termi++, mtp++){
+ /* Call d_??? function */
+                   (*(mtp->d_func))(1, toggletails+e, toggleheads+e,  mtp, nw); 
+        for (unsigned int i=0; i < mtp->nstats; i++,statspos++)
+          *statspos += mtp->dstats[i];
+      }
+         ToggleEdge(toggletails[e],toggleheads[e],&this->nw);
     }
   }
   
@@ -113,6 +117,7 @@ private:
   bool hasNetwork;
   bool hasModel;
   Network nw;
+  double* stats;
   Model* m;
 };
 
@@ -127,7 +132,6 @@ RCPP_MODULE(change_score_network){
     .method("getNumEdges", &ChangeScoreNetwork::getNumEdges,  "set the message" )
     .method("getNumTerms", &ChangeScoreNetwork::getNumTerms, "" )
     .method("getStats", &ChangeScoreNetwork::getStats, "set the message" )
-    .method("toggleEdge", &ChangeScoreNetwork::toggleEdge, "set the message" )
     .method("toggleEdgelist", &ChangeScoreNetwork::toggleEdgelist, "set the message" )
 	;
 }                     
